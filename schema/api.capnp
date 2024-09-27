@@ -40,11 +40,15 @@ interface Diflouroborane {
     # Diflouroborane stores machine¹ information in an opaque internal database. This interface is
     # the only stable process of modifying that information
 
+    rooms @3 () -> ( room :Rooms );
+    # Diflouroborane stores room information in an opaque internal database. This interface is
+    # the only stable process of modifying that information.
+
     # TODO Capability transfer system, required for machine takeover, session resumption.
 }
 
 struct UUID {
-    # UUID type used to identify machines.
+    # UUID type used to identify machines or rooms.
     # Since the exact value has no meaning the encoding rules are not too relevant, but it is
     # paramount that you are consistent when encoding and decoding this type.
     #
@@ -90,6 +94,16 @@ interface Permissions {
 
     removePolicy @4 ( p :List(Text) ) -> ();
     addPolicy @5 ( p :List(Text) ) -> ();
+}
+
+interface Room {
+
+    interface Inside {
+        leave @0 () -> ();
+    }
+
+    enter @0 ( uuid :UUID ) -> ( inside :Inside );
+    # Enter a room, identified by its UUID. If the caller is allowed to a `inside` Capability will be returned.
 }
 
 interface Authentication {
